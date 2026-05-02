@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Chat com ' + friend.name }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <section style="padding-top: 80px; height: 100vh; display: flex; flex-direction: column; background: var(--gray-50); overflow: hidden;">
+        <div class="container" style="flex: 1; display: flex; flex-direction: column; max-width: 900px; padding-top: 2rem; padding-bottom: 2rem; overflow: hidden;">
+            
+            <div class="chat-header" style="padding: 1.25rem 1.5rem; background: white; border-radius: var(--radius-lg) var(--radius-lg) 0 0; border: 1px solid var(--gray-200); border-bottom: none; display: flex; align-items: center; gap: 1rem; box-shadow: var(--shadow-sm); z-index: 10;">
+                <a href="/usuario/<%= friend._id %>" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+                    <div style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        <% if (friend.profilePic) { %>
+                            <img src="<%= friend.profilePic %>" style="width: 100%; height: 100%; object-fit: cover;">
+                        <% } else { %>
+                            <%= friend.name.charAt(0).toUpperCase() %>
+                        <% } %>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1rem; color: var(--navy-900);"><%= friend.name %></h3>
+                        <span style="font-size: 0.75rem; color: var(--emerald-600); display: flex; align-items: center; gap: 0.25rem;">
+                            <span style="width: 8px; height: 8px; background: var(--emerald-500); border-radius: 50%;"></span> Online para Impactar
+                        </span>
+                    </div>
+                </a>
+            </div>
+
+            <style>
+                .chat-container { flex: 1; display: flex; flex-direction: column; max-width: 900px; }
+                .message-row { display: flex; flex-direction: column; gap: 0.25rem; }
+                .message-row.me { align-items: flex-end; }
+                .message-row.them { align-items: flex-start; }
+                
+                .message-bubble {
+                    max-width: 70%;
+                    padding: 0.75rem 1.25rem;
+                    box-shadow: var(--shadow-sm);
+                    line-height: 1.5;
+                }
+                
+                .message-row.me .message-bubble {
+                    background: var(--emerald-500);
+                    color: white;
+                    border-radius: 1.25rem 1.25rem 0 1.25rem;
+                }
+                
+                .message-row.them .message-bubble {
+                    background: var(--gray-100);
+                    color: var(--navy-900);
+                    border-radius: 1.25rem 1.25rem 1.25rem 0;
+                }
+                
+                .message-time {
+                    font-size: 0.65rem;
+                    color: var(--gray-400);
+                }
+            </style>
+
+            <div id="chat-messages" style="flex: 1; background: white; border: 1px solid var(--gray-200); padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;">
+                <% if (messages.length === 0) { %>
+                    <div style="text-align: center; margin-top: 4rem; color: var(--gray-400);">
+                        <i data-lucide="message-square" style="width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.2;"></i>
+                        <p>Comece uma conversa com <%= friend.name %></p>
+                    </div>
+                <% } %>
+                
+                <% messages.forEach(function(msg) { %>
+                    <% const isMe = msg.senderId.toString() === user._id.toString(); %>
+                    <div class="message-row <%= isMe ? 'me' : 'them' %>">
+                        <div class="message-bubble">
+                            <%= msg.content %>
+                        </div>
+                        <span class="message-time">
+                            <%= new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                        </span>
+                    </div>
+                <% }); %>
+            </div>
+
+            <div class="chat-input-area" style="padding: 1.5rem; background: var(--gray-50); border-radius: 0 0 var(--radius-lg) var(--radius-lg); border: 1px solid var(--gray-200); border-top: none;">
+                <form id="chat-form" style="display: flex; gap: 1rem;">
+                    <input type="text" id="msg-input" placeholder="Digite sua mensagem..." autocomplete="off" required style="flex: 1; padding: 0.75rem 1.25rem; border-radius: 100px; border: 1px solid var(--gray-200); font-family: inherit; font-size: 0.95rem;">
+                    <button type="submit" class="btn btn-primary" style="width: 50px; height: 50px; border-radius: 50%; padding: 0;">
+                        <i data-lucide="send" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            const chatBox = document.getElementById('chat-messages');
+            const form = document.getElementById('chat-form');
+            const input = document.getElementById('msg-input');
+            const friendId = '<%= friend._id %>';
+
+            // Scroll para o fim
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const content = input.value.trim();
+                if (!content) return;
+
+                input.value = '';
+                
+                try {
+                    const response = await fetch('/mensagens/send', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ receiverId: friendId, content })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        addMessageToUI(data.message);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar:', error);
+                }
+            });
+
+            function addMessageToUI(msg) {
+                const div = document.createElement('div');
+                div.className = 'message-row me';
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                div.innerHTML = `
+                    <div class="message-bubble">
+                        ${msg.content}
+                    </div>
+                    <span class="message-time">
+                        ${time}
+                    </span>
+                `;
+                chatBox.appendChild(div);
+                
+                // Remover mensagem de "Comece uma conversa" se existir
+                const emptyMsg = chatBox.querySelector('div[style*="text-align: center"]');
+                if (emptyMsg) emptyMsg.remove();
+            }
+        });
+    </script>
+
+    <!-- Scripts essenciais (recolocados após remoção do footer) -->
+    <script src="/js/search.js"></script>
+    <script src="/js/script.js"></script>
+    <script>
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

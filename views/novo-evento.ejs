@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Criar Novo Evento' }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main class="create-project-page">
+        <div class="container">
+            <div class="create-project-card animate-up">
+                <div style="margin-bottom: 2.5rem; text-align: center;">
+                    <h1 style="font-size: 2.5rem; color: var(--navy-900); margin-bottom: 0.5rem;">Novo Evento</h1>
+                    <p style="color: var(--gray-600);">Organize ações e mobilize voluntários para sua causa.</p>
+                </div>
+
+                <% if (locals.error) { %>
+                    <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <form action="/evento/novo" method="POST" id="createEventForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="title">Título do Evento</label>
+                        <input type="text" id="title" name="title" placeholder="Ex: Mutirão de Limpeza na Praia" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Categoria</label>
+                        <select id="category" name="category" required style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200); background: white;">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Meio Ambiente">Meio Ambiente</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Social">Social</option>
+                            <option value="Tecnologia">Tecnologia</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Resumo Curto</label>
+                        <input type="text" id="description" name="description" placeholder="Uma frase curta que descreve o evento" required maxlength="120">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longDescription">Descrição Detalhada</label>
+                        <textarea id="longDescription" name="longDescription" rows="6" placeholder="Detalhes sobre o evento, cronograma e como participar..." required style="padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200); font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="date">Data</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Horário</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Localização</label>
+                        <input type="text" id="location" name="location" placeholder="Ex: Parque Central ou Link do Zoom" required>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                        <a href="/eventos" class="btn btn-outline" style="flex: 1;">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" style="flex: 2;">Publicar Evento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

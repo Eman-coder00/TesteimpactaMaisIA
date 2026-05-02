@@ -1,0 +1,192 @@
+<a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+<nav>
+    <div class="container nav-content">
+        <a href="/" class="logo">Impacta<span>Mais</span></a>
+        <ul class="nav-links">
+            <li><a href="/#hero">Início</a></li>
+            <li><a href="/#projetos">Projetos</a></li>
+            <li><a href="/eventos">Eventos</a></li>
+            <li><a href="/#newsletter">Contato</a></li>
+        </ul>
+
+        <div class="nav-search" role="search">
+            <div class="search-input-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="projectSearch" placeholder="Buscar projeto..." aria-label="Buscar projeto">
+                <div id="searchResults" class="search-dropdown" hidden></div>
+            </div>
+            <% if (user) { %>
+                <button id="btnOpenCreateModal" class="btn-create-project" title="Criar novo..." aria-label="Criar novo...">
+                    <i data-lucide="plus"></i>
+                </button>
+
+                <!-- Notificações (ao lado do +) -->
+                <div class="notifications-wrapper">
+                    <button id="btn-notifications" class="btn-notifications">
+                        <i data-lucide="bell"></i>
+                        <% if (locals.unreadCount > 0) { %>
+                            <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
+                                <%= unreadCount %>
+                            </span>
+                        <% } %>
+                    </button>
+                    
+                    <div id="notifications-dropdown" class="search-dropdown" style="width: 300px; right: 0; left: auto; padding: 0;" hidden>
+                        <div style="padding: 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+                            Notificações
+                            <button id="btn-mark-read" style="background: none; border: none; font-size: 0.75rem; color: var(--emerald-600); cursor: pointer;">Marcar todas como lidas</button>
+                        </div>
+                        <div style="max-height: 350px; overflow-y: auto;">
+                            <% if (notifications.length > 0) { %>
+                                <% notifications.forEach(function(n) { %>
+                                    <div class="notification-item <%= n.read ? '' : 'unread' %>" 
+                                         <% if (n.type === 'new_message') { %>
+                                            onclick="location.href='/mensagens/<%= n.fromId %>'"
+                                            style="cursor: pointer;"
+                                         <% } %>>
+                                        <p>
+                                            <% if (n.type === 'friend_request') { %>
+                                                <strong><%= n.fromName %></strong> enviou uma solicitação de amizade.
+                                            <% } else if (n.type === 'request_accepted') { %>
+                                                <strong><%= n.fromName %></strong> aceitou sua solicitação.
+                                            <% } else if (n.type === 'new_message') { %>
+                                                <strong><%= n.fromName %></strong>: "<%= n.content %>"
+                                            <% } %>
+                                        </p>
+                                        <% if (n.type === 'friend_request') { %>
+                                            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+                                                <form action="/amizade/respond" method="POST" style="margin: 0;">
+                                                    <input type="hidden" name="fromId" value="<%= n.fromId %>">
+                                                    <input type="hidden" name="action" value="accept">
+                                                    <button type="submit" class="btn btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Aceitar</button>
+                                                </form>
+                                                <form action="/amizade/respond" method="POST" style="margin: 0;">
+                                                    <input type="hidden" name="fromId" value="<%= n.fromId %>">
+                                                    <input type="hidden" name="action" value="decline">
+                                                    <button type="submit" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Recusar</button>
+                                                </form>
+                                            </div>
+                                        <% } %>
+                                        <span class="notification-time"><%= new Date(n.date).toLocaleDateString() %></span>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div style="padding: 2rem; text-align: center; color: var(--gray-400);">Nenhuma notificação por enquanto.</div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <style>
+            .notifications-wrapper { 
+                position: relative; 
+                margin-right: 1.5rem;
+                display: flex;
+                align-items: center;
+            }
+            .nav-search {
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                max-width: 280px; /* Largura menor quando não focada para dar espaço aos botões */
+            }
+            .nav-search:focus-within {
+                max-width: 600px;
+                flex: 2; /* Faz com que ela "empurre" os outros elementos para crescer */
+            }
+            .btn-notifications {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: var(--navy-900);
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 5px;
+                transition: var(--transition-base);
+            }
+            .btn-notifications:hover {
+                color: var(--emerald-500);
+                transform: scale(1.1);
+            }
+            .notification-item {
+                padding: 1rem;
+                border-bottom: 1px solid var(--gray-50);
+                transition: var(--transition-base);
+                background: white;
+            }
+            .notification-item.unread {
+                background: #f0fdf4; /* Um tom bem leve de esmeralda */
+            }
+            .notification-item p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--navy-900); }
+            .notification-time { font-size: 0.7rem; color: var(--gray-400); }
+        </style>
+
+        <div class="nav-auth">
+            <% if (user) { %>
+                <a href="/perfil" class="user-welcome">Olá, <strong><%= user.name.split(' ')[0] %></strong></a>
+                <a href="/logout" class="btn btn-outline" style="margin-left: 1rem;">Sair</a>
+            <% } else { %>
+                <a href="/login" class="btn btn-primary">Fazer Parte</a>
+            <% } %>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('btn-notifications');
+                const dropdown = document.getElementById('notifications-dropdown');
+                const btnRead = document.getElementById('btn-mark-read');
+
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        dropdown.hidden = !dropdown.hidden;
+                    });
+
+                    document.addEventListener('click', (e) => {
+                        if (dropdown && !dropdown.contains(e.target) && e.target !== btn) {
+                            dropdown.hidden = true;
+                        }
+                    });
+
+                    if (btnRead) {
+                        btnRead.addEventListener('click', async () => {
+                            try {
+                                await fetch('/notificacoes/ler', { method: 'POST' });
+                                location.reload();
+                            } catch (e) { console.error(e); }
+                        });
+                    }
+                }
+            });
+        </script>
+    </div>
+</nav>
+
+<!-- Modal de Seleção de Criação -->
+<% if (user) { %>
+<div id="createSelectionModal" class="modal-overlay" hidden>
+    <div class="modal-card animate-up">
+        <button id="btnCloseModal" class="modal-close">&times;</button>
+        <h3>O que você deseja criar?</h3>
+        <p>Selecione o tipo de conteúdo para publicar no hub.</p>
+        <div class="modal-options">
+            <a href="/projeto/novo" class="modal-option">
+                <div class="option-icon"><i data-lucide="folder-plus"></i></div>
+                <div class="option-info">
+                    <strong>Novo Projeto</strong>
+                    <span>Causas e iniciativas sociais</span>
+                </div>
+            </a>
+            <a href="/evento/novo" class="modal-option">
+                <div class="option-icon"><i data-lucide="calendar-plus"></i></div>
+                <div class="option-info">
+                    <strong>Novo Evento</strong>
+                    <span>Ações, palestras e mutirões</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<% } %>

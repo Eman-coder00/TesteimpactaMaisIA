@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Recuperar Senha 🚀' }) %>
+<body>
+
+    <a href="/login" class="back-home">
+        <i data-lucide="arrow-left"></i> Voltar para o login
+    </a>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo" style="display: block; margin-bottom: 1.5rem;">Impacta<span>Mais</span></a>
+                <h2>Recuperar Senha 🚀</h2>
+                <p>Enviaremos um link de recuperação para o seu e-mail.</p>
+            </div>
+
+            <% if (locals.error) { %>
+                <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (locals.success) { %>
+                <div class="alert alert-success" style="background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%- success %>
+                </div>
+            <% } %>
+
+            <form class="auth-form" method="POST" action="/esqueci-senha">
+                <div class="form-group">
+                    <label for="email">E-mail Cadastrado</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Enviar Link de Recuperação</button>
+            </form>
+
+            <div class="auth-footer">
+                Lembrou a senha? <a href="/login">Fazer Login</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

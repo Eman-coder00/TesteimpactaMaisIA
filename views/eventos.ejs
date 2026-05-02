@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Eventos Sociais' }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <section class="section-padding" style="padding-top: 120px;">
+        <div class="container">
+            <div class="section-title animate-up">
+                <h2>Próximos Eventos</h2>
+                <p>Participe de nossas atividades e faça a diferença de perto.</p>
+            </div>
+
+            <div class="events-timeline">
+                <% if (locals.events && events.length > 0) { %>
+                    <% events.forEach(function(event) { %>
+                        <div class="event-card animate-up">
+                            <div class="event-date">
+                                <% 
+                                    const dateParts = event.date ? event.date.split('-') : ['00', '00', '00'];
+                                    const day = dateParts[2] || '00';
+                                    const monthsShort = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                                    const month = monthsShort[parseInt(dateParts[1]) - 1] || '???';
+                                %>
+                                <span class="day"><%= day %></span>
+                                <span class="month"><%= month %></span>
+                            </div>
+                            <div class="event-details">
+                                <h3><%= event.title %></h3>
+                                <div class="event-meta">
+                                    <span><i data-lucide="map-pin" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <span class="sr-only">Local:</span> <%= event.location %></span>
+                                    <span><i data-lucide="clock" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <span class="sr-only">Horário:</span> <%= event.time %></span>
+                                    <span style="color: var(--emerald-600); font-weight: 600;"><i data-lucide="users" aria-hidden="true" style="width: 14px; height: 14px; vertical-align: middle;"></i> <%= event.participants ? event.participants.length : 0 %> inscritos</span>
+                                </div>
+                                <p style="margin-top: 0.5rem; color: var(--gray-600); font-size: 0.9rem;"><%= event.description %></p>
+                            </div>
+                            <a href="/evento?id=<%= event._id %>" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p style="text-align: center; opacity: 0.7;">Nenhum evento agendado para os próximos dias.</p>
+                <% } %>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

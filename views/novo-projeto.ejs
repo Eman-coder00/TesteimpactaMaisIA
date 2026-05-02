@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Criar Novo Projeto' }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <main class="create-project-page">
+        <div class="container">
+            <div class="create-project-card animate-up">
+                <div style="margin-bottom: 2.5rem; text-align: center;">
+                    <h1 style="font-size: 2.5rem; color: var(--navy-900); margin-bottom: 0.5rem;">Novo Projeto</h1>
+                    <p style="color: var(--gray-600);">Compartilhe sua iniciativa e mobilize a comunidade.</p>
+                </div>
+
+                <% if (locals.error) { %>
+                    <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <form action="/projeto/novo" method="POST" id="createProjectForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="title">Título do Projeto</label>
+                        <input type="text" id="title" name="title" placeholder="Ex: Educação para Todos" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="category">Categoria</label>
+                            <select id="category" name="category" required style="padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200); background: white;">
+                                <option value="">Selecione uma categoria</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Meio Ambiente">Meio Ambiente</option>
+                                <option value="Saúde">Saúde</option>
+                                <option value="Social">Social</option>
+                                <option value="Tecnologia">Tecnologia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status Inicial</label>
+                            <input type="text" id="status" name="status" value="Ativo" readonly style="background: var(--gray-50);">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Resumo Curto (Aparece no card)</label>
+                        <input type="text" id="description" name="description" placeholder="Uma frase impactante sobre o projeto" required maxlength="120">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="longDescription">Descrição Detalhada</label>
+                        <textarea id="longDescription" name="longDescription" rows="6" placeholder="Conte a história do projeto, objetivos e como as pessoas podem ajudar..." required style="padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200); font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="impact">Meta de Impacto</label>
+                            <input type="text" id="impact" name="impact" placeholder="Ex: 500+ pessoas atendidas" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="volunteers">Equipe/Voluntários</label>
+                            <input type="text" id="volunteers" name="volunteers" placeholder="Ex: 10 educadores" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Imagem de Capa</label>
+                        <div class="image-upload-wrapper" id="uploadWrapper">
+                            <i data-lucide="image-plus" style="width: 48px; height: 48px; color: var(--gray-600); margin-bottom: 1rem;"></i>
+                            <p>Clique para selecionar ou arraste uma imagem</p>
+                            <input type="file" id="imageInput" accept="image/*" required>
+                            <img id="imagePreview" class="image-preview" src="#" alt="Preview">
+                            <input type="hidden" id="imageData" name="image">
+                        </div>
+                        <p style="font-size: 0.8rem; color: var(--gray-600); margin-top: 0.5rem;">A imagem será otimizada automaticamente para economizar espaço.</p>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                        <a href="/" class="btn btn-outline" style="flex: 1;">Cancelar</a>
+                        <button type="submit" class="btn btn-primary" style="flex: 2;">Publicar Projeto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const imageData = document.getElementById('imageData');
+        const uploadWrapper = document.getElementById('uploadWrapper');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    // Otimização de Imagem via Canvas
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Redimensionar se for muito grande (max 1200px)
+                    const MAX_WIDTH = 1200;
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Converter para JPEG com qualidade reduzida (0.7) para economizar espaço no DB
+                    const optimizedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+                    
+                    imagePreview.src = optimizedBase64;
+                    imageData.value = optimizedBase64;
+                    uploadWrapper.classList.add('has-image');
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>

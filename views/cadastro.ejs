@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Cadastro' }) %>
+<body>
+
+    <a href="/" class="back-home">
+        <i data-lucide="arrow-left"></i> Voltar para o início
+    </a>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo" style="display: block; margin-bottom: 1.5rem;">Impacta<span>Mais</span></a>
+                <h2>Criar uma conta</h2>
+                <p>Junte-se ao nosso hub e comece a transformar realidades.</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form class="auth-form" id="cadastroForm" method="POST" action="/cadastro">
+                <div class="form-group">
+                    <label for="name">Nome completo</label>
+                    <input type="text" id="name" name="name" placeholder="Seu nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="exemplo@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password">Confirmar Senha</label>
+                    <input type="password" id="confirm-password" name="confirmPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Criar Conta</button>
+            </form>
+
+            <div class="auth-footer">
+                Já tem uma conta? <a href="/login">Fazer login</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

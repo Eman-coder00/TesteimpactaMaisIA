@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Perfil de ' + targetUser.name }) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <section class="section-padding" style="padding-top: 120px;">
+        <div class="container">
+            <div class="profile-header animate-up" style="background: var(--gray-50); padding: 3rem; border-radius: var(--radius-xl); border: 1px solid var(--gray-200); margin-bottom: 4rem; text-align: center; position: relative;">
+                
+                <div class="user-avatar" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1.5rem; overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--emerald-500); color: white; border: 4px solid white; box-shadow: var(--shadow-md);">
+                    <% if (targetUser.profilePic) { %>
+                        <img src="<%= targetUser.profilePic %>" alt="Foto de <%= targetUser.name %>" style="width: 100%; height: 100%; object-fit: cover;">
+                    <% } else { %>
+                        <span style="font-size: 3rem; font-weight: 800;"><%= targetUser.name.charAt(0).toUpperCase() %></span>
+                    <% } %>
+                </div>
+                <h2><%= targetUser.name %></h2>
+                <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Membro desde <%= new Date(targetUser.createdAt).toLocaleDateString('pt-BR') %></p>
+                
+                <% if (targetUser.bio) { %>
+                    <p style="max-width: 600px; margin: 0 auto 2rem; color: var(--navy-800); line-height: 1.6;"><%= targetUser.bio %></p>
+                <% } %>
+
+                <div style="display: flex; justify-content: center; gap: 1rem;">
+                    <% if (!user) { %>
+                        <a href="/login" class="btn btn-primary">Entrar para conectar</a>
+                    <% } else { %>
+                        <% if (friendshipStatus === 'friends') { %>
+                            <button class="btn btn-outline" style="cursor: default; border-color: var(--emerald-600); color: var(--emerald-600);">
+                                <i data-lucide="check" style="width: 18px; height: 18px; margin-right: 0.5rem;"></i> Amigos
+                            </button>
+                            <a href="/mensagens/<%= targetUser._id %>" class="btn btn-primary">
+                                <i data-lucide="message-circle" style="width: 18px; height: 18px; margin-right: 0.5rem;"></i> Enviar Mensagem
+                            </a>
+                        <% } else if (friendshipStatus === 'pending') { %>
+                            <button class="btn btn-outline" disabled style="opacity: 0.7;">
+                                <i data-lucide="clock" style="width: 18px; height: 18px; margin-right: 0.5rem;"></i> Solicitação Pendente
+                            </button>
+                        <% } else { %>
+                            <form action="/amizade/request" method="POST" style="margin: 0;">
+                                <input type="hidden" name="targetId" value="<%= targetUser._id %>">
+                                <button type="submit" class="btn btn-primary">
+                                    <i data-lucide="user-plus" style="width: 18px; height: 18px; margin-right: 0.5rem;"></i> Adicionar Amigo
+                                </button>
+                            </form>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="my-agenda animate-up" style="animation-delay: 0.2s; margin-bottom: 4rem;">
+                <h3 style="font-size: 2rem; margin-bottom: 2rem; color: var(--navy-900); border-bottom: 2px solid var(--emerald-500); display: inline-block; padding-bottom: 0.5rem;">Histórico de Projetos</h3>
+                
+                <div class="projects-grid">
+                    <% if (myProjects && myProjects.length > 0) { %>
+                        <% myProjects.forEach(function(project) { %>
+                            <div class="project-card">
+                                <div class="project-img" style="background-image: url('<%= project.image %>')"></div>
+                                <div class="project-info">
+                                    <span class="project-tag"><%= project.category %></span>
+                                    <h3><%= project.title %></h3>
+                                    <p><%= project.description %></p>
+                                    <a href="/projeto?id=<%= project.slug %>" class="btn btn-outline">Ver Detalhes</a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: var(--gray-50); border-radius: var(--radius-lg);">
+                            <p style="opacity: 0.7;">Este usuário ainda não criou projetos.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="animate-up" style="animation-delay: 0.3s;">
+                <h3 style="font-size: 2rem; margin-bottom: 2rem; color: var(--navy-900); border-bottom: 2px solid var(--emerald-500); display: inline-block; padding-bottom: 0.5rem;">Eventos que participa</h3>
+                <div class="events-timeline">
+                    <% if (joinedEvents && joinedEvents.length > 0) { %>
+                        <% joinedEvents.forEach(function(event) { %>
+                            <div class="event-card">
+                                <div class="event-date">
+                                    <span class="day"><%= event.date.split('-')[2] %></span>
+                                    <span class="month"><%= event.date.split('-')[1] %></span>
+                                </div>
+                                <div class="event-details">
+                                    <h3><%= event.title %></h3>
+                                    <div class="event-meta">
+                                        <span><i data-lucide="map-pin"></i> <%= event.location %></span>
+                                    </div>
+                                </div>
+                                <a href="/evento?id=<%= event._id %>" class="btn btn-outline">Ver</a>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div style="text-align: center; padding: 3rem; background: var(--gray-50); border-radius: var(--radius-md);">
+                            <p style="color: var(--gray-600);">Nenhum evento registrado.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

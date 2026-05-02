@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<%- include('partials/head', { title: 'Login' }) %>
+<body>
+
+    <a href="/" class="back-home">
+        <i data-lucide="arrow-left"></i> Voltar para o início
+    </a>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo" style="display: block; margin-bottom: 1.5rem;">Impacta<span>Mais</span></a>
+                <h2>Bem-vindo de volta</h2>
+                <p>Entre com suas credenciais para acessar sua conta.</p>
+            </div>
+
+            <% if (locals.error) { %>
+                <div class="alert alert-error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (locals.success) { %>
+                <div class="alert alert-success" style="background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; text-align: center;">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <form class="auth-form" id="loginForm" method="POST" action="/login">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="exemplo@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                    <div style="text-align: right; margin-top: 0.5rem;">
+                        <a href="/esqueci-senha" style="font-size: 0.85rem; color: var(--emerald-600); font-weight: 600;">Esqueci minha senha</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Entrar</button>
+            </form>
+
+            <div class="auth-footer">
+                Não tem uma conta? <a href="/cadastro">Cadastre-se agora</a>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
