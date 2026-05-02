@@ -153,6 +153,24 @@
                             btnSave.innerText = 'Salvar Alterações';
                         }
                     });
+
+                    // Abrir/Fechar Modal Amigos
+                    const modalAmigos = document.getElementById('modal-amigos');
+                    const btnAmigos = document.getElementById('btn-view-friends');
+                    const btnCloseAmigos = document.getElementById('btn-close-modal-amigos');
+
+                    if (btnAmigos) {
+                        btnAmigos.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            modalAmigos.style.display = 'flex';
+                        });
+                    }
+                    if (btnCloseAmigos) {
+                        btnCloseAmigos.addEventListener('click', () => modalAmigos.style.display = 'none');
+                    }
+                    window.addEventListener('click', (e) => { 
+                        if(e.target === modalAmigos) modalAmigos.style.display = 'none'; 
+                    });
                 });
             </script>
 
@@ -194,7 +212,7 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
                 <div class="animate-up" style="animation-delay: 0.3s;">
                     <h3 style="font-size: 1.75rem; margin-bottom: 2rem; color: var(--navy-900); border-bottom: 2px solid var(--emerald-500); display: inline-block; padding-bottom: 0.5rem;">Meus Projetos</h3>
                     <div style="display: flex; flex-direction: column; gap: 1rem;">
@@ -216,24 +234,55 @@
                     </div>
                 </div>
 
-                <div class="animate-up" style="animation-delay: 0.4s;">
-                    <h3 style="font-size: 1.75rem; margin-bottom: 2rem; color: var(--navy-900); border-bottom: 2px solid var(--emerald-500); display: inline-block; padding-bottom: 0.5rem;">Meus Eventos</h3>
-                    <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <% if (locals.myEvents && myEvents.length > 0) { %>
-                            <% myEvents.forEach(function(event) { %>
-                                <a href="/eventos" style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: white; border-radius: var(--radius-md); border: 1px solid var(--gray-100); text-decoration: none; transition: var(--transition-base);">
-                                    <div style="width: 60px; height: 60px; background: var(--navy-900); color: white; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
-                                        <i data-lucide="calendar" style="width: 24px; height: 24px;"></i>
+                <div class="animate-up" style="animation-delay: 0.5s;">
+                    <h3 style="font-size: 1.75rem; margin-bottom: 2rem; color: var(--navy-900); border-bottom: 2px solid var(--emerald-500); display: inline-block; padding-bottom: 0.5rem;">Amigos</h3>
+                    <div id="btn-view-friends" style="cursor: pointer; padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md); text-align: center; border: 1px solid var(--gray-200); transition: var(--transition-base); display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                        <div style="width: 60px; height: 60px; background: var(--emerald-500); color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: var(--shadow-sm);">
+                            <i data-lucide="users" style="width: 30px; height: 30px;"></i>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--navy-900); margin: 0;"><%= friendsList.length %> <%= friendsList.length === 1 ? 'Amigo' : 'Amigos' %></h4>
+                            <span style="font-size: 0.85rem; color: var(--emerald-600); font-weight: 600;">Ver todos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL DE AMIGOS -->
+            <div id="modal-amigos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                <div class="auth-card" style="position: relative; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; animation: fadeInUp 0.4s ease;">
+                    <button id="btn-close-modal-amigos" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; cursor: pointer; color: var(--gray-600);">
+                        <i data-lucide="x"></i>
+                    </button>
+                    
+                    <div class="auth-header">
+                        <h2>Seus Amigos</h2>
+                        <p>Pessoas que você segue e te seguem de volta</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                        <% if (locals.friendsList && friendsList.length > 0) { %>
+                            <% friendsList.forEach(friend => { %>
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: var(--gray-50); border-radius: var(--radius-md); border: 1px solid var(--gray-100);">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <div style="width: 45px; height: 45px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                                            <% if (friend.profilePic) { %>
+                                                <img src="<%= friend.profilePic %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                            <% } else { %>
+                                                <%= friend.name.charAt(0).toUpperCase() %>
+                                            <% } %>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; color: var(--navy-900);"><%= friend.name %></h4>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h4 style="color: var(--navy-900); margin: 0;"><%= event.title %></h4>
-                                        <span style="font-size: 0.8rem; color: var(--gray-600);"><%= event.date %></span>
-                                    </div>
-                                </a>
-                            <% }); %>
+                                    <a href="/usuario/<%= friend._id %>" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Ver Perfil</a>
+                                </div>
+                            <% }) %>
                         <% } else { %>
-                            <div style="padding: 2rem; background: var(--gray-50); border-radius: var(--radius-md); text-align: center; border: 1px dashed var(--gray-200);">
-                                <p style="color: var(--gray-600); font-size: 0.9rem;">Você ainda não criou nenhum evento.</p>
+                            <div style="text-align: center; padding: 2rem; opacity: 0.6;">
+                                <i data-lucide="user-plus" style="width: 40px; height: 40px; margin-bottom: 1rem;"></i>
+                                <p>Você ainda não tem amigos.</p>
                             </div>
                         <% } %>
                     </div>

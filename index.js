@@ -20,6 +20,7 @@ async function startServer() {
 
         app.set('view engine', 'ejs');
         app.set('views', path.join(__dirname, 'views'));
+        app.set('trust proxy', 1); // Necessário para Render/Proxies (sessions/secure cookies)
 
         // SEGURANÇA: Cabeçalhos HTTP (CSP, HSTS, etc)
         app.use(helmet({
@@ -46,7 +47,7 @@ async function startServer() {
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24, // 1 dia
                 httpOnly: true,
-                secure: false, // false para localhost
+                secure: process.env.NODE_ENV === 'production', // true para produção (HTTPS)
                 sameSite: 'lax'
             }
         }));
@@ -131,8 +132,15 @@ async function startServer() {
             // Projetos e Eventos criados pelo usuário
             const myProjects = await db.collection('posts').find({ authorId: userId }).toArray();
             const myEvents = await db.collection('events').find({ authorId: userId }).toArray();
+
+            // Buscar dados completos dos amigos (nome e foto)
+            const friendIds = userDoc.friends || [];
+            const friendsList = await db.collection('users').find(
+                { _id: { $in: friendIds } },
+                { projection: { name: 1, profilePic: 1 } }
+            ).toArray();
             
-        res.render('perfil', { user: userDoc, joinedEvents, myProjects, myEvents });
+            res.render('perfil', { user: userDoc, joinedEvents, myProjects, myEvents, friendsList });
         });
 
         app.get('/usuario/:id', async (req, res) => {
@@ -179,6 +187,12 @@ async function startServer() {
             try {
                 const event = await db.collection('events').findOne({ _id: new ObjectId(id) });
                 if (!event) return res.redirect('/eventos');
+
+                // Buscar dados do autor
+                const author = await db.collection('users').findOne(
+                    { _id: event.authorId },
+                    { projection: { name: 1, profilePic: 1 } }
+                );
                 
                 let isParticipating = false;
                 if (req.session.user) {
@@ -189,7 +203,7 @@ async function startServer() {
                 // Contagem de participantes
                 const participantsCount = event.participants ? event.participants.length : 0;
                 
-                res.render('evento-detalhe', { event, isParticipating, participantsCount });
+                res.render('evento-detalhe', { event, isParticipating, participantsCount, author });
             } catch (error) {
                 res.redirect('/eventos');
             }
@@ -206,7 +220,14 @@ async function startServer() {
                 }
                 
                 if (!post) return res.redirect('/');
-                res.render('projeto', { post });
+
+                // Buscar dados do autor
+                const author = await db.collection('users').findOne(
+                    { _id: post.authorId },
+                    { projection: { name: 1, profilePic: 1 } }
+                );
+
+                res.render('projeto', { post, author });
             } catch (error) {
                 res.redirect('/');
             }
