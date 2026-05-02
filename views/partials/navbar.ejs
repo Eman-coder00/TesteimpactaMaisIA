@@ -47,7 +47,7 @@
                         <% } %>
                     </button>
                     
-                    <div id="notifications-dropdown" class="search-dropdown" style="width: 300px; right: 0; left: auto; padding: 0;" hidden>
+                    <div id="notifications-dropdown" class="search-dropdown" hidden>
                         <div style="padding: 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
                             Notificações
                             <button id="btn-mark-read" style="background: none; border: none; font-size: 0.75rem; color: var(--emerald-600); cursor: pointer;">Marcar todas como lidas</button>
@@ -137,6 +137,34 @@
             }
             .notification-item p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--navy-900); }
             .notification-time { font-size: 0.7rem; color: var(--gray-400); }
+
+            /* Ajustes do dropdown de notificações */
+            #notifications-dropdown {
+                width: 300px;
+                right: 0;
+                left: auto;
+                padding: 0;
+            }
+
+            @media (max-width: 768px) {
+                #notifications-dropdown {
+                    position: fixed;
+                    top: 70px;
+                    left: 1rem;
+                    right: 1rem;
+                    width: auto;
+                    max-width: none;
+                    z-index: 2000;
+                }
+            }
+
+            @media (max-width: 480px) {
+                #notifications-dropdown {
+                    top: 70px;
+                    left: 0.5rem;
+                    right: 0.5rem;
+                }
+            }
         </style>
 
         <div class="nav-auth">
