@@ -820,6 +820,19 @@ footer {
     gap: 0.5rem;
 }
 
+.form-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+    .form-grid-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
 .form-group label {
     font-weight: 600;
     font-size: 0.9rem;

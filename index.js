@@ -89,11 +89,15 @@ async function startServer() {
         app.get('/', async (req, res) => {
             try {
                 const sort = req.query.sort || 'latest';
+                const category = req.query.category || 'Todos';
+                
                 let posts;
+                const filter = category !== 'Todos' ? { category } : {};
 
                 if (sort === 'likes') {
-                    // Ordenar por número de curtidas usando agregação
+                    // Ordenar por número de curtidas usando agregação com filtro
                     posts = await db.collection('posts').aggregate([
+                        { $match: filter },
                         {
                             $addFields: {
                                 likesCount: { $size: { $ifNull: ["$likes", []] } }
@@ -102,15 +106,25 @@ async function startServer() {
                         { $sort: { likesCount: -1, createdAt: -1 } }
                     ]).toArray();
                 } else {
-                    // Ordenar por mais recentes (padrão)
-                    posts = await db.collection('posts').find().sort({ createdAt: -1 }).toArray();
+                    // Ordenar por mais recentes (padrão) com filtro
+                    posts = await db.collection('posts').find(filter).sort({ createdAt: -1 }).toArray();
                 }
 
                 const events = await db.collection('events').find().limit(3).toArray();
-                res.render('index', { posts, events, currentSort: sort });
+                res.render('index', { 
+                    posts, 
+                    events, 
+                    currentSort: sort,
+                    currentCategory: category
+                });
             } catch (error) {
                 console.error('Erro ao carregar home:', error);
-                res.render('index', { posts: [], events: [], currentSort: 'latest' });
+                res.render('index', { 
+                    posts: [], 
+                    events: [], 
+                    currentSort: 'latest',
+                    currentCategory: 'Todos'
+                });
             }
         });
 

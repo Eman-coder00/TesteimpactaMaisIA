@@ -26,14 +26,39 @@
                         <p>Explore as frentes de atuação do Impacta Mais e encontre a causa que mais ressoa com o seu propósito.</p>
                     </div>
                     
-                    <div class="filter-wrapper" style="display: flex; align-items: center; gap: 1rem; background: var(--gray-50); padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
-                        <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px; color: var(--gray-600);"></i>
-                        <label for="sortProjects" style="font-size: 0.9rem; font-weight: 600; color: var(--navy-800);">Ordenar por:</label>
-                        <select id="sortProjects" onchange="window.location.href='/?sort=' + this.value + '#projetos'" style="background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; color: var(--emerald-600); cursor: pointer; outline: none;">
-                            <option value="latest" <%= locals.currentSort === 'latest' ? 'selected' : '' %>>Mais Recentes</option>
-                            <option value="likes" <%= locals.currentSort === 'likes' ? 'selected' : '' %>>Mais Curtidos</option>
-                        </select>
+                    <div class="filter-wrapper" style="display: flex; align-items: center; gap: 1.5rem; background: var(--gray-50); padding: 0.5rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200); flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <i data-lucide="tag" style="width: 18px; height: 18px; color: var(--gray-600);"></i>
+                            <label for="filterCategory" style="font-size: 0.9rem; font-weight: 600; color: var(--navy-800);">Categoria:</label>
+                            <select id="filterCategory" onchange="updateFilters()" style="background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; color: var(--emerald-600); cursor: pointer; outline: none;">
+                                <option value="Todos" <%= locals.currentCategory === 'Todos' ? 'selected' : '' %>>Todos</option>
+                                <option value="Educação" <%= locals.currentCategory === 'Educação' ? 'selected' : '' %>>Educação</option>
+                                <option value="Meio Ambiente" <%= locals.currentCategory === 'Meio Ambiente' ? 'selected' : '' %>>Meio Ambiente</option>
+                                <option value="Saúde" <%= locals.currentCategory === 'Saúde' ? 'selected' : '' %>>Saúde</option>
+                                <option value="Social" <%= locals.currentCategory === 'Social' ? 'selected' : '' %>>Social</option>
+                                <option value="Tecnologia" <%= locals.currentCategory === 'Tecnologia' ? 'selected' : '' %>>Tecnologia</option>
+                            </select>
+                        </div>
+
+                        <div style="width: 1px; height: 20px; background: var(--gray-200); display: block;"></div>
+
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <i data-lucide="sliders-horizontal" style="width: 18px; height: 18px; color: var(--gray-600);"></i>
+                            <label for="sortProjects" style="font-size: 0.9rem; font-weight: 600; color: var(--navy-800);">Ordenar por:</label>
+                            <select id="sortProjects" onchange="updateFilters()" style="background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; color: var(--emerald-600); cursor: pointer; outline: none;">
+                                <option value="latest" <%= locals.currentSort === 'latest' ? 'selected' : '' %>>Mais Recentes</option>
+                                <option value="likes" <%= locals.currentSort === 'likes' ? 'selected' : '' %>>Mais Curtidos</option>
+                            </select>
+                        </div>
                     </div>
+
+                    <script>
+                        function updateFilters() {
+                            const sort = document.getElementById('sortProjects').value;
+                            const category = document.getElementById('filterCategory').value;
+                            window.location.href = `/?sort=${sort}&category=${encodeURIComponent(category)}#projetos`;
+                        }
+                    </script>
                 </div>
                 
                 <div class="projects-grid">
