@@ -223,3 +223,53 @@
     </div>
 </div>
 <% } %>
+
+<!-- Floating Search Button -->
+<div class="floating-search-container">
+    <div class="floating-search-bar" id="floatingSearchBar" style="display: none;">
+        <div class="search-input-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="floatingSearchInput" placeholder="O que você procura?" aria-label="Buscar...">
+            <div id="floatingSearchResults" class="search-dropdown" hidden></div>
+        </div>
+        <button id="btnCloseFloatingSearch" class="btn-close-floating" title="Fechar busca">
+            <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+    </div>
+    <button class="btn-floating-search" id="btnOpenFloatingSearch" aria-label="Abrir busca">
+        <i data-lucide="search" style="width: 28px; height: 28px;"></i>
+    </button>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnOpen = document.getElementById('btnOpenFloatingSearch');
+        const btnClose = document.getElementById('btnCloseFloatingSearch');
+        const searchBar = document.getElementById('floatingSearchBar');
+        const input = document.getElementById('floatingSearchInput');
+
+        if (btnOpen && btnClose && searchBar && input) {
+            btnOpen.addEventListener('click', () => {
+                searchBar.style.display = 'flex';
+                btnOpen.style.display = 'none';
+                input.focus();
+            });
+
+            btnClose.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                searchBar.style.display = 'none';
+                btnOpen.style.display = 'flex';
+                
+                // Limpar busca ao fechar
+                input.value = '';
+                const results = document.getElementById('floatingSearchResults');
+                if (results) {
+                    results.hidden = true;
+                    results.innerHTML = '';
+                }
+            });
+        }
+    });
+</script>

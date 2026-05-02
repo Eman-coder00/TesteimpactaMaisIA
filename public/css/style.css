@@ -1153,3 +1153,159 @@ footer {
     .modal-option { gap: 1rem; padding: 1rem; }
     .option-icon { width: 40px; height: 40px; flex-shrink: 0; }
 }
+
+/* Profile Page Responsive Fixes */
+.profile-edit-actions {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10;
+}
+
+@media (max-width: 600px) {
+    .profile-edit-actions {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+/* Navbar Mobile Adjustments */
+@media (max-width: 768px) {
+    .nav-content {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.75rem !important;
+        height: 70px !important;
+        padding: 0 1rem !important;
+    }
+
+    .logo {
+        font-size: 1.1rem !important;
+        margin-right: auto !important;
+        order: 1 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .nav-search {
+        order: 2 !important;
+        margin: 0 !important;
+        width: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+
+    .nav-search .search-input-wrapper {
+        display: none !important;
+    }
+
+    .search-input-wrapper {
+        flex: 1 !important;
+    }
+
+    .mobile-menu-toggle {
+        order: 3 !important;
+        display: flex !important;
+        margin-left: 0 !important;
+        flex-shrink: 0 !important;
+    }
+
+    .notifications-wrapper {
+        margin-right: 0.5rem !important;
+    }
+}
+
+/* Floating Search Component (Mobile Only) */
+.floating-search-container {
+    display: none; /* Oculto no Desktop */
+}
+
+@media (max-width: 768px) {
+    .floating-search-container {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1500;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .btn-floating-search {
+        width: 60px;
+        height: 60px;
+        background-color: var(--emerald-500);
+        color: white;
+        border-radius: 50%;
+        border: none;
+        box-shadow: var(--shadow-lg);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-base);
+    }
+
+    .btn-floating-search:hover {
+        transform: scale(1.1);
+        background-color: var(--emerald-600);
+    }
+
+    .floating-search-bar {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: calc(100vw - 4rem);
+        max-width: 500px;
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 0.75rem;
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        animation: slideInUp 0.3s ease;
+    }
+
+    /* Ajuste do Dropdown: Mostrar ACIMA do input */
+    #floatingSearchResults {
+        top: auto !important;
+        bottom: calc(100% + 0.5rem) !important;
+        box-shadow: 0 -10px 15px -3px rgb(0 0 0 / 0.1) !important; /* Sombra para cima */
+    }
+
+    .btn-close-floating {
+        background: none;
+        border: none;
+        color: var(--gray-600);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+@keyframes slideInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 480px) {
+    .floating-search-container {
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    .floating-search-bar {
+        width: calc(100vw - 3rem);
+    }
+    .btn-floating-search {
+        width: 50px;
+        height: 50px;
+    }
+}

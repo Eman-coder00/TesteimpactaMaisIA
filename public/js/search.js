@@ -1,37 +1,51 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('projectSearch');
-    const searchResults = document.getElementById('searchResults');
-    let debounceTimer;
+    // Função genérica para configurar busca
+    function setupSearch(inputElement, resultsElement) {
+        if (!inputElement || !resultsElement) return;
 
-    if (!searchInput || !searchResults) return;
+        let debounceTimer;
 
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(debounceTimer);
-        const query = e.target.value.trim();
+        inputElement.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            const query = e.target.value.trim();
 
-        if (query.length < 2) {
-            searchResults.hidden = true;
-            searchResults.innerHTML = '';
-            return;
-        }
-
-        debounceTimer = setTimeout(async () => {
-            try {
-                const response = await fetch(`/api/search/global?q=${encodeURIComponent(query)}`);
-                const items = await response.json();
-
-                renderResults(items);
-            } catch (error) {
-                console.error('Erro na busca:', error);
+            if (query.length < 2) {
+                resultsElement.hidden = true;
+                resultsElement.innerHTML = '';
+                return;
             }
-        }, 300);
-    });
 
-    function renderResults(items) {
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const response = await fetch(`/api/search/global?q=${encodeURIComponent(query)}`);
+                    const items = await response.json();
+                    renderResults(items, resultsElement);
+                } catch (error) {
+                    console.error('Erro na busca:', error);
+                }
+            }, 300);
+        });
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!inputElement.contains(e.target) && !resultsElement.contains(e.target)) {
+                resultsElement.hidden = true;
+            }
+        });
+
+        // Re-abrir ao focar se houver texto
+        inputElement.addEventListener('focus', () => {
+            if (inputElement.value.trim().length >= 2) {
+                resultsElement.hidden = false;
+            }
+        });
+    }
+
+    function renderResults(items, resultsElement) {
         if (items.length === 0) {
-            searchResults.innerHTML = '<div class="search-no-results">Nada encontrado.</div>';
+            resultsElement.innerHTML = '<div class="search-no-results">Nada encontrado.</div>';
         } else {
-            searchResults.innerHTML = items.map(item => {
+            resultsElement.innerHTML = items.map(item => {
                 const link = item.type === 'projeto' ? `/projeto?id=${item.slug}` : `/usuario/${item.id}`;
                 const thumb = item.image ? 
                     `<img src="${item.image}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">` :
@@ -48,20 +62,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             }).join('');
         }
-        searchResults.hidden = false;
+        resultsElement.hidden = false;
     }
 
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', (e) => {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.hidden = true;
-        }
-    });
+    // Configura a busca da Navbar
+    const navInput = document.getElementById('projectSearch');
+    const navResults = document.getElementById('searchResults');
+    setupSearch(navInput, navResults);
 
-    // Re-abrir ao focar se houver texto
-    searchInput.addEventListener('focus', () => {
-        if (searchInput.value.trim().length >= 2) {
-            searchResults.hidden = false;
-        }
-    });
+    // Configura a busca Flutuante
+    const floatInput = document.getElementById('floatingSearchInput');
+    const floatResults = document.getElementById('floatingSearchResults');
+    setupSearch(floatInput, floatResults);
 });
