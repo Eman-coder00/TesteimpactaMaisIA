@@ -7,7 +7,23 @@
             <li><a href="/#projetos">Projetos</a></li>
             <li><a href="/eventos">Eventos</a></li>
             <li><a href="/#newsletter">Contato</a></li>
+            
+            <!-- Links de Auth para Mobile -->
+            <li class="mobile-only-auth">
+                <% if (user) { %>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; width: 80%; margin: 1rem auto;">
+                        <a href="/perfil" class="btn btn-primary" style="width: 100%;">Meu Perfil</a>
+                        <a href="/logout" class="btn btn-outline" style="width: 100%; border-color: #ef4444; color: #ef4444;">Sair da Conta</a>
+                    </div>
+                <% } else { %>
+                    <a href="/login" class="btn btn-primary" style="margin: 1rem auto; width: 80%;">Fazer Parte</a>
+                <% } %>
+            </li>
         </ul>
+
+        <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+        </button>
 
         <div class="nav-search" role="search">
             <div class="search-input-wrapper">
@@ -158,6 +174,23 @@
                             } catch (e) { console.error(e); }
                         });
                     }
+                }
+
+                // Mobile Menu Toggle
+                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                const navLinks = document.querySelector('.nav-links');
+
+                if (mobileMenuToggle) {
+                    mobileMenuToggle.addEventListener('click', () => {
+                        navLinks.classList.toggle('active');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (navLinks.classList.contains('active')) {
+                            icon.setAttribute('data-lucide', 'x');
+                        } else {
+                            icon.setAttribute('data-lucide', 'menu');
+                        }
+                        lucide.createIcons();
+                    });
                 }
             });
         </script>
