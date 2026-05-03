@@ -25,9 +25,8 @@
             <div class="container project-details-grid">
                 <div class="main-content animate-up">
                     <h2>Sobre o Projeto</h2>
-                    <div id="project-long-description" style="font-size: 1.15rem; line-height: 1.8;">
-                        <p>O projeto <strong><%= post.title %></strong> atua na frente de <strong><%= post.category %></strong> com o objetivo de gerar um impacto positivo e sustentável em nossa sociedade.</p>
-                        <p>Atualmente, nossas atividades estão focadas em expandir o alcance de nossas iniciativas, engajando mais membros da comunidade e fortalecendo a causa através de ações diretas e parcerias estratégicas. Acreditamos que a união de esforços é o caminho para transformações reais e duradouras.</p>
+                    <div id="project-long-description" style="font-size: 1.15rem; line-height: 1.8; white-space: pre-line;">
+                        <%= post.longDescription || 'Nenhuma descrição detalhada fornecida.' %>
                     </div>
 
                     <% if (post.authorName) { %>

@@ -257,6 +257,10 @@ async function startServer() {
             
             const { title, category, description, longDescription, impact, volunteers, image } = req.body;
             
+            if (!title || !category || !description || !longDescription || !impact || !volunteers || !image) {
+                return res.render('novo-projeto', { error: 'Por favor, preencha todos os campos, incluindo a imagem de capa.' });
+            }
+            
             try {
                 // Gerar slug a partir do título
                 const slug = title.toLowerCase()
@@ -303,6 +307,10 @@ async function startServer() {
             
             const { title, category, description, longDescription, date, time, location } = req.body;
             
+            if (!title || !category || !description || !longDescription || !date || !time || !location) {
+                return res.render('novo-evento', { error: 'Por favor, preencha todos os campos obrigatórios.' });
+            }
+            
             try {
                 const newEvent = {
                     title,
@@ -327,6 +335,10 @@ async function startServer() {
 
         app.post('/login', async (req, res) => {
             const { email, password } = req.body;
+            
+            if (!email || !password) {
+                return res.render('login', { error: 'E-mail e senha são obrigatórios.' });
+            }
             try {
                 const userDoc = await db.collection('users').findOne({ email });
                 
@@ -353,6 +365,10 @@ async function startServer() {
 
         app.post('/cadastro', async (req, res) => {
             const { name, email, password, confirmPassword } = req.body;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                return res.render('cadastro', { error: 'Todos os campos são obrigatórios.' });
+            }
             
             if (password !== confirmPassword) {
                 return res.render('cadastro', { error: 'As senhas não coincidem.' });
@@ -748,6 +764,10 @@ async function startServer() {
 
         app.post('/resetar-senha', async (req, res) => {
             const { token, password, confirmPassword } = req.body;
+
+            if (!token || !password || !confirmPassword) {
+                return res.render('resetar-senha', { token, error: 'Todos os campos são obrigatórios.' });
+            }
 
             if (password !== confirmPassword) {
                 return res.render('resetar-senha', { token, error: 'As senhas não coincidem.' });
