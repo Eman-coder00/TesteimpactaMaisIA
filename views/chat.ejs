@@ -71,7 +71,7 @@
                             <%= msg.content %>
                         </div>
                         <span class="message-time">
-                            <%= new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+                            <%= new Date(msg.timestamp).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }) %>
                         </span>
                     </div>
                 <% }); %>
@@ -141,7 +141,7 @@
                 div.className = `message-row ${isMe ? 'me' : 'them'}`;
                 div.setAttribute('data-id', msg._id);
                 
-                const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const time = new Date(msg.timestamp).toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
                 
                 div.innerHTML = `
                     <div class="message-bubble">
@@ -191,7 +191,11 @@
         });
     </script>
 
-    <!-- Scripts essenciais (recolocados após remoção do footer) -->
+    <!-- Acessibilidade -->
+    <%- include('partials/vlibras') %>
+    <%- include('partials/a11y-panel') %>
+
+    <!-- Scripts essenciais -->
     <script src="/js/search.js"></script>
     <script src="/js/script.js"></script>
     <script>

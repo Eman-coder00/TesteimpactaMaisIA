@@ -1322,3 +1322,135 @@ footer {
         height: 50px;
     }
 }
+
+/* Ocultar VLibras durante a splash screen */
+#splash-screen:not(.splash-hidden) ~ * div[vw],
+#splash-screen:not(.splash-hidden) ~ div[vw],
+#splash-screen:not(.splash-hidden) ~ * .v-libras-widget,
+#splash-screen:not(.splash-hidden) ~ .v-libras-widget {
+    display: none !important;
+}
+
+/* === PAINEL DE ACESSIBILIDADE === */
+:root {
+    --a11y-primary: #12678D;
+    --a11y-bg: #ffffff;
+    --a11y-text: #0f172a;
+}
+
+.a11y-toggle-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 100px; /* Acima do VLibras */
+    width: 44px;
+    height: 44px;
+    background: var(--a11y-primary);
+    color: white;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.a11y-toggle-btn:hover { transform: scale(1.1); }
+
+.a11y-panel {
+    position: fixed;
+    right: -350px;
+    top: 0;
+    width: 320px;
+    height: 100%;
+    background: var(--a11y-bg);
+    box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+    z-index: 10000;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0;
+    color: var(--a11y-text);
+}
+
+.a11y-panel.active { right: 0; }
+
+.a11y-header {
+    background: var(--a11y-primary);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.a11y-title { display: flex; align-items: center; gap: 0.75rem; font-weight: 700; font-size: 1.25rem; }
+.a11y-close { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
+
+.a11y-body { padding: 1.5rem; flex: 1; overflow-y: auto; }
+
+.a11y-section { margin-bottom: 2rem; }
+.a11y-section-title { 
+    display: flex; align-items: center; gap: 0.5rem; 
+    font-size: 0.75rem; font-weight: 800; color: #64748b; 
+    margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.a11y-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 0.5rem; }
+
+.a11y-grid button {
+    padding: 0.5rem; border: 1px solid #e2e8f0; background: white; 
+    border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+}
+
+.a11y-grid button:hover { border-color: var(--a11y-primary); color: var(--a11y-primary); }
+.a11y-grid button.active { background: var(--a11y-primary); color: white; border-color: var(--a11y-primary); }
+
+.a11y-toggle-item { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; 
+}
+
+.a11y-switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.a11y-switch input { opacity: 0; width: 0; height: 0; }
+.a11y-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 20px; }
+.a11y-slider:before { position: absolute; content: " \; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .a11y-slider { background-color: var(--a11y-primary); }
+input:checked + .a11y-slider:before { transform: translateX(20px); }
+
+.a11y-reset {
+ padding: 1rem; background: #f8fafc; border: none; border-top: 1px solid #e2e8f0;
+ display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+ font-weight: 700; color: var(--a11y-primary); cursor: pointer; width: 100%;
+}
+
+/* Efeitos Globais */
+.high-contrast { background: #000 !important; color: #fff !important; }
+.high-contrast *:not(.a11y-panel, .a11y-panel *) { background: #000 !important; color: #fff !important; border-color: #fff !important; }
+.high-contrast a { text-decoration: underline !important; color: #ffff00 !important; }
+
+.dyslexia-font { font-family: 'OpenDyslexic', sans-serif !important; }
+
+.filter-protan { filter: hue-rotate(30deg) saturate(120%); }
+.filter-deutan { filter: hue-rotate(-30deg) saturate(120%); }
+.filter-tritan { filter: hue-rotate(180deg) saturate(120%); }
+
+
+/* Overrides Dinâmicos de Acessibilidade */
+:root {
+    --a11y-font-scale: 1;
+    --a11y-line-height: 1.5;
+    --a11y-letter-spacing: normal;
+}
+
+body {
+    font-size: calc(1rem * var(--a11y-font-scale, 1)) !important;
+    line-height: var(--a11y-line-height, 1.5) !important;
+    letter-spacing: var(--a11y-letter-spacing, normal) !important;
+    transition: font-size 0.2s ease, line-height 0.2s ease, letter-spacing 0.2s ease;
+}
+

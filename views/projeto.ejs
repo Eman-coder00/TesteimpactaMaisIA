@@ -90,7 +90,7 @@
                                                 <%= comment.userName %>
                                             </span>
                                             <span style="font-size: 0.85rem; color: var(--gray-600);">
-                                                <%= new Date(comment.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) %>
+                                                <%= new Date(comment.createdAt).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: 'long', year: 'numeric' }) %>
                                             </span>
                                         </div>
                                         <p style="color: var(--gray-600); line-height: 1.6;"><%= comment.content %></p>

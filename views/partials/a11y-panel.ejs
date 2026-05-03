@@ -1,0 +1,93 @@
+<!-- Botão Flutuante de Acessibilidade -->
+<button class="a11y-toggle-btn" onclick="toggleA11yPanel()" aria-label="Abrir menu de acessibilidade">
+    <i data-lucide="accessibility"></i>
+</button>
+
+<!-- Painel de Acessibilidade -->
+<div id="a11y-panel" class="a11y-panel">
+    <div class="a11y-header">
+        <div class="a11y-title">
+            <i data-lucide="accessibility"></i>
+            <span>Acessibilidade</span>
+        </div>
+        <button class="a11y-close" onclick="toggleA11yPanel()" aria-label="Fechar menu">&times;</button>
+    </div>
+
+    <div class="a11y-body">
+        <!-- Tamanho da Letra -->
+        <div class="a11y-section">
+            <div class="a11y-section-title">
+                <i data-lucide="type"></i>
+                <span>TAMANHO DA LETRA</span>
+            </div>
+            <div class="a11y-grid">
+                <button class="a11y-btn-font" data-value="0.85" onclick="window.setA11ySetting('fontScale', '0.85')">85%</button>
+                <button class="a11y-btn-font" data-value="1" onclick="window.setA11ySetting('fontScale', '1')">100%</button>
+                <button class="a11y-btn-font" data-value="1.15" onclick="window.setA11ySetting('fontScale', '1.15')">115%</button>
+                <button class="a11y-btn-font" data-value="1.3" onclick="window.setA11ySetting('fontScale', '1.3')">130%</button>
+                <button class="a11y-btn-font" data-value="1.5" onclick="console.log('Botão 150% clicado'); window.setA11ySetting('fontScale', '1.5')">150%</button>
+            </div>
+        </div>
+
+        <!-- Espaçamento de Linha -->
+        <div class="a11y-section">
+            <div class="a11y-section-title">
+                <i data-lucide="align-justify"></i>
+                <span>ESPAÇAMENTO DE LINHA</span>
+            </div>
+            <div class="a11y-grid">
+                <button class="a11y-btn-line" data-value="1.2" onclick="window.setA11ySetting('lineHeight', '1.2')">90%</button>
+                <button class="a11y-btn-line" data-value="1.5" onclick="window.setA11ySetting('lineHeight', '1.5')">100%</button>
+                <button class="a11y-btn-line" data-value="1.8" onclick="window.setA11ySetting('lineHeight', '1.8')">120%</button>
+                <button class="a11y-btn-line" data-value="2.1" onclick="window.setA11ySetting('lineHeight', '2.1')">140%</button>
+            </div>
+        </div>
+
+        <!-- Espaçamento de Letras -->
+        <div class="a11y-section">
+            <div class="a11y-section-title">
+                <i data-lucide="stretch-horizontal"></i>
+                <span>LETRAS</span>
+            </div>
+            <div class="a11y-grid">
+                <button class="a11y-btn-spacing" data-value="normal" onclick="window.setA11ySetting('letterSpacing', 'normal')">0</button>
+                <button class="a11y-btn-spacing" data-value="0.5px" onclick="window.setA11ySetting('letterSpacing', '0.5px')">+0.5px</button>
+                <button class="a11y-btn-spacing" data-value="1px" onclick="window.setA11ySetting('letterSpacing', '1px')">+1px</button>
+                <button class="a11y-btn-spacing" data-value="1.5px" onclick="window.setA11ySetting('letterSpacing', '1.5px')">+1.5px</button>
+            </div>
+        </div>
+
+        <!-- Visão -->
+        <div class="a11y-section">
+            <div class="a11y-section-title">
+                <i data-lucide="eye"></i>
+                <span>VISÃO</span>
+            </div>
+            <div class="a11y-toggle-item">
+                <span>Fonte para dislexia</span>
+                <label class="a11y-switch">
+                    <input type="checkbox" id="a11y-dyslexia-toggle" onchange="window.setA11ySetting('dyslexiaFont', this.checked)">
+                    <span class="a11y-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Daltonismo -->
+        <div class="a11y-section">
+            <div class="a11y-section-title">
+                <span>DALTONISMO</span>
+            </div>
+            <div class="a11y-grid">
+                <button class="a11y-btn-filter" data-value="none" onclick="window.setA11ySetting('colorFilter', 'none')">Sem</button>
+                <button class="a11y-btn-filter" data-value="deutan" onclick="window.setA11ySetting('colorFilter', 'deutan')">Deutan</button>
+                <button class="a11y-btn-filter" data-value="protan" onclick="window.setA11ySetting('colorFilter', 'protan')">Protan</button>
+                <button class="a11y-btn-filter" data-value="tritan" onclick="window.setA11ySetting('colorFilter', 'tritan')">Tritan</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="a11y-reset" onclick="window.resetA11ySettings()">
+        <i data-lucide="refresh-cw"></i>
+        <span>Restaurar padrão</span>
+    </button>
+</div>

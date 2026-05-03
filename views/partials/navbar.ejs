@@ -21,10 +21,6 @@
             </li>
         </ul>
 
-        <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
-            <i data-lucide="menu"></i>
-        </button>
-
         <div class="nav-search" role="search">
             <div class="search-input-wrapper">
                 <i data-lucide="search" class="search-icon"></i>
@@ -36,16 +32,17 @@
                     <i data-lucide="plus"></i>
                 </button>
 
-                <!-- Notificações (ao lado do +) -->
+                <!-- Notificações -->
                 <div class="notifications-wrapper">
                     <button id="btn-notifications" class="btn-notifications">
                         <i data-lucide="bell"></i>
                         <% if (locals.unreadCount > 0) { %>
-                            <span style="position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 0.65rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">
+                            <span class="notification-badge">
                                 <%= unreadCount %>
                             </span>
                         <% } %>
                     </button>
+                    <!-- ... dropdown content ... -->
                     
                     <div id="notifications-dropdown" class="search-dropdown" hidden>
                         <div style="padding: 1rem; border-bottom: 1px solid var(--gray-100); font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
@@ -83,7 +80,7 @@
                                                 </form>
                                             </div>
                                         <% } %>
-                                        <span class="notification-time"><%= new Date(n.date).toLocaleDateString() %></span>
+                                        <span class="notification-time"><%= new Date(n.date).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) %></span>
                                     </div>
                                 <% }); %>
                             <% } else { %>
@@ -92,8 +89,17 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Botão de Busca Mobile (Entre Notificação e Menu) -->
+                <button class="btn-navbar-search-mobile" id="btnTriggerSearchMobile" aria-label="Abrir busca">
+                    <i data-lucide="search"></i>
+                </button>
             <% } %>
         </div>
+
+        <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
+            <i data-lucide="menu"></i>
+        </button>
 
         <style>
             .notifications-wrapper { 
@@ -126,6 +132,22 @@
                 color: var(--emerald-500);
                 transform: scale(1.1);
             }
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: #ef4444;
+                color: white;
+                font-size: 0.65rem;
+                font-weight: bold;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid white;
+            }
             .notification-item {
                 padding: 1rem;
                 border-bottom: 1px solid var(--gray-50);
@@ -138,15 +160,37 @@
             .notification-item p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--navy-900); }
             .notification-time { font-size: 0.7rem; color: var(--gray-400); }
 
-            /* Ajustes do dropdown de notificações */
-            #notifications-dropdown {
-                width: 300px;
-                right: 0;
-                left: auto;
-                padding: 0;
+            /* Estilo do Botão de Busca na Navbar (Mobile) */
+            .btn-navbar-search-mobile {
+                display: none;
+                background: none;
+                border: none;
+                color: var(--navy-900);
+                padding: 5px;
+                cursor: pointer;
+                transition: var(--transition-base);
+            }
+            .btn-navbar-search-mobile:hover {
+                color: var(--emerald-500);
+                transform: scale(1.1);
             }
 
             @media (max-width: 768px) {
+                .btn-navbar-search-mobile {
+                    display: flex;
+                    order: 2; /* Entre sino e menu */
+                }
+                .notifications-wrapper {
+                    order: 1; /* Primeiro */
+                    margin-right: 0.5rem;
+                }
+                .mobile-menu-toggle {
+                    order: 3; /* Por último */
+                    margin-left: 0.5rem;
+                }
+                .btn-floating-search {
+                    display: none !important;
+                }
                 #notifications-dropdown {
                     position: fixed;
                     top: 70px;
@@ -156,6 +200,14 @@
                     max-width: none;
                     z-index: 2000;
                 }
+            }
+
+            /* Ajustes do dropdown de notificações Desktop */
+            #notifications-dropdown {
+                width: 300px;
+                right: 0;
+                left: auto;
+                padding: 0;
             }
 
             @media (max-width: 480px) {
@@ -272,17 +324,21 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const btnOpen = document.getElementById('btnOpenFloatingSearch');
+        const btnTriggerMobile = document.getElementById('btnTriggerSearchMobile');
         const btnClose = document.getElementById('btnCloseFloatingSearch');
         const searchBar = document.getElementById('floatingSearchBar');
         const input = document.getElementById('floatingSearchInput');
 
-        if (btnOpen && btnClose && searchBar && input) {
-            btnOpen.addEventListener('click', () => {
-                searchBar.style.display = 'flex';
-                btnOpen.style.display = 'none';
-                input.focus();
-            });
+        const openSearch = () => {
+            searchBar.style.display = 'flex';
+            if (btnOpen) btnOpen.style.display = 'none';
+            input.focus();
+        };
 
+        if (btnOpen) btnOpen.addEventListener('click', openSearch);
+        if (btnTriggerMobile) btnTriggerMobile.addEventListener('click', openSearch);
+
+        if (btnClose && searchBar && input) {
             btnClose.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
