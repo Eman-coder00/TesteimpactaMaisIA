@@ -1,7 +1,7 @@
 <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
 <nav>
     <div class="container nav-content">
-        <a href="/" class="logo">Impacta<span>Mais</span></a>
+        <a href="/" class="logo"><span>Impacta</span>Mais</a>
         <ul class="nav-links">
             <li><a href="/#hero">Início</a></li>
             <li><a href="/#projetos">Projetos</a></li>
@@ -28,7 +28,7 @@
         <div class="nav-search" role="search">
             <div class="search-input-wrapper">
                 <i data-lucide="search" class="search-icon"></i>
-                <input type="text" id="projectSearch" placeholder="Buscar projeto..." aria-label="Buscar projeto">
+                <input type="text" id="projectSearch" placeholder="Buscar projeto/pessoa..." aria-label="Buscar projeto ou pessoa">
                 <div id="searchResults" class="search-dropdown" hidden></div>
             </div>
             <% if (user) { %>
@@ -133,7 +133,7 @@
                 background: white;
             }
             .notification-item.unread {
-                background: #f0fdf4; /* Um tom bem leve de esmeralda */
+                background: #f0f7ff; /* Um tom bem leve de azul */
             }
             .notification-item p { font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--navy-900); }
             .notification-time { font-size: 0.7rem; color: var(--gray-400); }
@@ -257,7 +257,7 @@
     <div class="floating-search-bar" id="floatingSearchBar" style="display: none;">
         <div class="search-input-wrapper">
             <i data-lucide="search" class="search-icon"></i>
-            <input type="text" id="floatingSearchInput" placeholder="O que você procura?" aria-label="Buscar...">
+            <input type="text" id="floatingSearchInput" placeholder="Buscar projeto/pessoa..." aria-label="Buscar projeto ou pessoa">
             <div id="floatingSearchResults" class="search-dropdown" hidden></div>
         </div>
         <button id="btnCloseFloatingSearch" class="btn-close-floating" title="Fechar busca">

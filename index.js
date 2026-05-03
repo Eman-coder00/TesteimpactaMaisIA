@@ -852,6 +852,27 @@ async function startServer() {
             }
         });
 
+        app.get('/mensagens/sync/:friendId', async (req, res) => {
+            if (!req.session.user) return res.status(401).json({ error: 'Não autorizado' });
+            
+            const myId = new ObjectId(req.session.user.id);
+            const friendId = new ObjectId(req.params.friendId);
+
+            try {
+                const messages = await db.collection('messages').find({
+                    $or: [
+                        { senderId: myId, receiverId: friendId },
+                        { senderId: friendId, receiverId: myId }
+                    ]
+                }).sort({ timestamp: 1 }).toArray();
+
+                res.json({ messages });
+            } catch (error) {
+                console.error('Erro ao sincronizar mensagens:', error);
+                res.status(500).json({ error: 'Erro ao sincronizar' });
+            }
+        });
+
         app.listen(PORT, () => {
             console.log(`\nSITE ATIVO: http://localhost:${PORT}\n`);
         });

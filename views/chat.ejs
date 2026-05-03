@@ -66,7 +66,7 @@
                 
                 <% messages.forEach(function(msg) { %>
                     <% const isMe = msg.senderId.toString() === user._id.toString(); %>
-                    <div class="message-row <%= isMe ? 'me' : 'them' %>">
+                    <div class="message-row <%= isMe ? 'me' : 'them' %>" data-id="<%= msg._id %>">
                         <div class="message-bubble">
                             <%= msg.content %>
                         </div>
@@ -96,6 +96,15 @@
             const input = document.getElementById('msg-input');
             const friendId = '<%= friend._id %>';
 
+            const myId = '<%= user._id %>';
+            const displayedIds = new Set();
+            
+            // Inicializar IDs já exibidos (vindos do EJS)
+            document.querySelectorAll('.message-row').forEach(row => {
+                const id = row.getAttribute('data-id');
+                if (id) displayedIds.add(id);
+            });
+
             // Scroll para o fim
             chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -124,8 +133,13 @@
             });
 
             function addMessageToUI(msg) {
+                if (displayedIds.has(msg._id)) return;
+                displayedIds.add(msg._id);
+
+                const isMe = msg.senderId.toString() === myId;
                 const div = document.createElement('div');
-                div.className = 'message-row me';
+                div.className = `message-row ${isMe ? 'me' : 'them'}`;
+                div.setAttribute('data-id', msg._id);
                 
                 const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 
@@ -143,6 +157,37 @@
                 const emptyMsg = chatBox.querySelector('div[style*="text-align: center"]');
                 if (emptyMsg) emptyMsg.remove();
             }
+
+            // Polling para novas mensagens
+            async function syncMessages() {
+                try {
+                    const response = await fetch(`/mensagens/sync/${friendId}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        let hasNew = false;
+                        
+                        data.messages.forEach(msg => {
+                            if (!displayedIds.has(msg._id)) {
+                                addMessageToUI(msg);
+                                hasNew = true;
+                            }
+                        });
+
+                        if (hasNew) {
+                            // Só faz scroll automático se o usuário já estiver perto do fim
+                            const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 100;
+                            if (isAtBottom) {
+                                chatBox.scrollTop = chatBox.scrollHeight;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao sincronizar:', error);
+                }
+            }
+
+            // Iniciar polling a cada 3 segundos
+            setInterval(syncMessages, 3000);
         });
     </script>
 

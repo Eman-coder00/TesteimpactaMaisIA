@@ -1,8 +1,8 @@
 :root {
     /* Color Palette */
-    --emerald-500: #10b981;
-    --emerald-600: #059669;
-    --emerald-700: #047857;
+    --emerald-500: #12678D;
+    --emerald-600: #0e5270;
+    --emerald-700: #0a3d54;
     --navy-800: #1e293b;
     --navy-900: #0f172a;
     --navy-950: #020617;
@@ -229,7 +229,7 @@ nav {
     outline: none;
     border-color: var(--emerald-500);
     background-color: var(--white);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(18, 103, 141, 0.1);
 }
 
 .search-icon {
@@ -851,7 +851,7 @@ footer {
 .form-group input:focus {
     outline: none;
     border-color: var(--emerald-500);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(18, 103, 141, 0.1);
 }
 
 .auth-footer {
@@ -972,7 +972,7 @@ footer {
 .comment-form textarea:focus {
     outline: none;
     border-color: var(--emerald-500);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    box-shadow: 0 0 0 3px rgba(18, 103, 141, 0.1);
 }
 
 .comment-item {
@@ -1013,7 +1013,7 @@ footer {
 
 .image-upload-wrapper:hover {
     border-color: var(--emerald-500);
-    background-color: rgba(16, 185, 129, 0.05);
+    background-color: rgba(18, 103, 141, 0.05);
 }
 
 .image-upload-wrapper input[type="file"] {

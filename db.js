@@ -19,6 +19,9 @@ async function connectDB() {
         // Criar índice único no email
         await db.collection('users').createIndex({ email: 1 }, { unique: true });
         
+        // Criar índice para mensagens (otimiza o polling do chat)
+        await db.collection('messages').createIndex({ senderId: 1, receiverId: 1, timestamp: 1 });
+        
         return { db, client };
     } catch (error) {
         console.error('ERRO CRÍTICO: Não foi possível conectar ao MongoDB.');
