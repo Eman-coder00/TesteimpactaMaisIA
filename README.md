@@ -74,4 +74,3 @@ Este projeto foi desenvolvido seguindo rigorosos padrões de segurança para pro
 Este projeto foi desenvolvido para fins educacionais e de impacto social. Sinta-se à vontade para contribuir!
 
 ---
-Desenvolvido por [Eman-coder00](https://github.com/Eman-coder00) 💚
