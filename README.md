@@ -1,6 +1,5 @@
 # 🌟 Impacta Mais - Hub de Projetos Sociais
 
-https://impactamaisia.onrender.com
 O **Impacta Mais** é uma plataforma dinâmica projetada para conectar voluntários, doadores e entusiastas de causas sociais. Nosso objetivo é facilitar a criação, gestão e engajamento em projetos e eventos que transformam realidades nas áreas de educação, meio ambiente e saúde.
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Completo%20%2F%20Seguro-brightgreen)
