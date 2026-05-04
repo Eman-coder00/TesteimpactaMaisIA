@@ -1,0 +1,59 @@
+.hero-content {
+    max-width: 850px !important;
+}
+
+.project-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* Modal Share Responsiveness */
+.share-link-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.friends-scroll-area {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.friends-scroll-area::-webkit-scrollbar {
+    width: 8px;
+    display: block !important;
+}
+
+.friends-scroll-area::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 10px;
+}
+
+.friends-scroll-area::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 10px;
+    border: 2px solid var(--gray-100);
+}
+
+.friends-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+@media (max-width: 480px) {
+    .share-link-group {
+        flex-direction: column;
+    }
+    
+    .share-link-group button {
+        width: 100%;
+    }
+    
+    #modal-share .auth-card {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+}

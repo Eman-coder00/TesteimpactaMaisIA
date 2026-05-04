@@ -42,23 +42,109 @@
                                 <span>Postado por: <strong style="color: var(--navy-900); font-style: normal;"><%= post.authorName %></strong></span>
                             </div>
                             
-                            <div class="like-container">
+                            <div class="like-container" style="display: flex; align-items: center; gap: 1rem;">
                                 <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
                                     <i data-lucide="heart" class="heart-icon"></i>
                                     <span class="like-count" id="likeCountText"><%= post.likes ? post.likes.length : 0 %> <%= (post.likes ? post.likes.length : 0) === 1 ? 'Curtida' : 'Curtidas' %></span>
+                                </button>
+                                
+                                <button id="btn-share-project" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-color: var(--gray-200); color: var(--gray-600);">
+                                    <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+                                    Compartilhar
                                 </button>
                             </div>
                         </div>
                     <% } else { %>
                         <div style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-100); display: flex; justify-content: flex-end;">
-                            <div class="like-container">
+                            <div class="like-container" style="display: flex; align-items: center; gap: 1rem;">
                                 <button class="btn-like-ajax <%= locals.user && post.likes && post.likes.some(id => id && id.toString() === user._id.toString()) ? 'active' : '' %>" data-id="<%= post._id %>" aria-label="Curtir este projeto">
                                     <i data-lucide="heart" class="heart-icon"></i>
                                     <span class="like-count" id="likeCountText"><%= post.likes ? post.likes.length : 0 %> <%= (post.likes ? post.likes.length : 0) === 1 ? 'Curtida' : 'Curtidas' %></span>
                                 </button>
+
+                                <button id="btn-share-project-no-author" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-color: var(--gray-200); color: var(--gray-600);">
+                                    <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+                                    Compartilhar
+                                </button>
                             </div>
                         </div>
                     <% } %>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const modal = document.getElementById('modal-share');
+                            const btnShare = document.getElementById('btn-share-project');
+                            const btnShareNoAuthor = document.getElementById('btn-share-project-no-author');
+                            const btnClose = document.getElementById('btn-close-share');
+                            const linkInput = document.getElementById('share-link-input');
+                            const btnCopy = document.getElementById('btn-copy-link');
+
+                            // Configurar link atual
+                            linkInput.value = window.location.href;
+
+                            const openModal = () => {
+                                modal.style.display = 'flex';
+                                document.body.style.overflow = 'hidden';
+                            };
+
+                            const closeModal = () => {
+                                modal.style.display = 'none';
+                                document.body.style.overflow = 'auto';
+                            };
+
+                            if (btnShare) btnShare.addEventListener('click', openModal);
+                            if (btnShareNoAuthor) btnShareNoAuthor.addEventListener('click', openModal);
+                            if (btnClose) btnClose.addEventListener('click', closeModal);
+                            window.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+                            // Copiar Link
+                            btnCopy.addEventListener('click', () => {
+                                linkInput.select();
+                                document.execCommand('copy');
+                                btnCopy.innerText = 'Copiado!';
+                                btnCopy.style.background = 'var(--navy-900)';
+                                setTimeout(() => {
+                                    btnCopy.innerText = 'Copiar';
+                                    btnCopy.style.background = 'var(--emerald-500)';
+                                }, 2000);
+                            });
+
+                            // Encaminhar para Amigos
+                            document.querySelectorAll('.btn-forward-project').forEach(btn => {
+                                btn.addEventListener('click', async () => {
+                                    const friendId = btn.getAttribute('data-friend-id');
+                                    const projectTitle = document.getElementById('project-title').innerText;
+                                    const projectLink = window.location.href;
+                                    const content = `Olá! Veja este projeto incrível no Impacta Mais: *${projectTitle}*\nLink: ${projectLink}`;
+
+                                    btn.disabled = true;
+                                    btn.innerText = 'Enviando...';
+
+                                    try {
+                                        const response = await fetch('/mensagens/send', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ receiverId: friendId, content })
+                                        });
+
+                                        if (response.ok) {
+                                            btn.innerText = 'Enviado!';
+                                            btn.style.background = 'var(--emerald-50) ';
+                                            btn.style.color = 'var(--emerald-600)';
+                                            btn.style.borderColor = 'var(--emerald-200)';
+                                        } else {
+                                            btn.disabled = false;
+                                            btn.innerText = 'Erro';
+                                        }
+                                    } catch (err) {
+                                        console.error(err);
+                                        btn.disabled = false;
+                                        btn.innerText = 'Erro';
+                                    }
+                                });
+                            });
+                        });
+                    </script>
                     
 
                     <!-- Comments Section -->
@@ -142,6 +228,66 @@
             </div>
         </section>
     </main>
+
+    <!-- MODAL COMPARTILHAR -->
+    <div id="modal-share" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 10000; backdrop-filter: blur(8px);">
+        <div class="auth-card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 450px; width: 90%; animation: fadeInUp 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); margin: 0; background: white; border-radius: var(--radius-lg); padding: 2rem;">
+            <button id="btn-close-share" style="position: absolute; top: 1.25rem; right: 1.25rem; background: var(--gray-100); border: none; cursor: pointer; color: var(--gray-600); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10;">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+            
+            <div class="auth-header" style="margin-bottom: 1.5rem; text-align: center;">
+                <h2 style="font-size: 1.5rem; color: var(--navy-900); margin: 0;">Compartilhar</h2>
+                <p style="color: var(--gray-500); margin-top: 0.5rem;">Escolha como espalhar essa iniciativa</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- Copiar Link -->
+                <div style="background: var(--gray-50); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--gray-200);">
+                    <label style="font-size: 0.75rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; margin-bottom: 0.75rem; display: block;">Link do Projeto</label>
+                    <div class="share-link-group">
+                        <input type="text" id="share-link-input" readonly value="" style="flex: 1; padding: 0.75rem; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); font-size: 0.85rem; background: white; outline: none; width: 100%;">
+                        <button id="btn-copy-link" class="btn btn-primary" style="padding: 0 1.25rem; font-size: 0.85rem; font-weight: 600; white-space: nowrap;">Copiar</button>
+                    </div>
+                </div>
+
+                <!-- Encaminhar para Amigos -->
+                <div>
+                    <h4 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; color: var(--navy-900); display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="users" style="width: 18px; height: 18px; color: var(--emerald-500);"></i>
+                        Encaminhar para Amigos
+                    </h4>
+                    <div class="friends-scroll-area" style="max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 4px;">
+                        <% if (locals.user && locals.friendsList && friendsList.length > 0) { %>
+                            <% friendsList.forEach(friend => { %>
+                                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: white; border: 1px solid var(--gray-100); border-radius: var(--radius-md); transition: all 0.2s;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; overflow: hidden; background: var(--emerald-500); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.9rem; font-weight: 700;">
+                                                            <% if (friend.profilePic) { %>
+                                                                <img src="<%= friend.profilePic %>" style="width: 100%; height: 100%; object-fit: cover;">
+                                                            <% } else { %>
+                                                                <%= friend.name.charAt(0).toUpperCase() %>
+                                                            <% } %>
+                                        </div>
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: var(--navy-900);"><%= friend.name %></span>
+                                    </div>
+                                    <button class="btn btn-outline btn-forward-project" data-friend-id="<%= friend._id %>" style="padding: 0.5rem 0.75rem; font-size: 0.75rem; border-radius: 100px;">Encaminhar</button>
+                                </div>
+                            <% }) %>
+                        <% } else if (!locals.user) { %>
+                            <div style="text-align: center; padding: 1.5rem; background: var(--gray-50); border-radius: var(--radius-md); border: 1px dashed var(--gray-200);">
+                                <p style="font-size: 0.85rem; color: var(--gray-500);">Faça <a href="/login" style="color: var(--emerald-600); font-weight: 600;">login</a> para compartilhar.</p>
+                            </div>
+                        <% } else { %>
+                            <div style="text-align: center; padding: 1.5rem; background: var(--gray-50); border-radius: var(--radius-md); border: 1px dashed var(--gray-200);">
+                                <p style="font-size: 0.85rem; color: var(--gray-500);">Você ainda não tem amigos.</p>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <%- include('partials/footer') %>
 </body>

@@ -242,7 +242,17 @@ async function startServer() {
                     { projection: { name: 1, profilePic: 1 } }
                 );
 
-                res.render('projeto', { post, author });
+                let friendsList = [];
+                if (req.session.user) {
+                    const me = await db.collection('users').findOne({ _id: new ObjectId(req.session.user.id) });
+                    const friendIds = me.friends || [];
+                    friendsList = await db.collection('users').find(
+                        { _id: { $in: friendIds } },
+                        { projection: { name: 1, profilePic: 1 } }
+                    ).toArray();
+                }
+
+                res.render('projeto', { post, author, friendsList });
             } catch (error) {
                 res.redirect('/');
             }

@@ -9,7 +9,7 @@
         <!-- Hero Section -->
         <section id="hero" class="hero">
             <div class="container hero-content animate-up">
-                <h1>Conectando Propósitos, Ampliando Impactos</h1>
+                <h1>Conectando Propósitos, <br> Ampliando Impactos</h1>
                 <p>Transformamos boas intenções em ações reais. Conheça projetos que estão mudando o mundo e descubra como você pode contribuir.</p>
                 <div class="hero-btns">
                     <a href="#projetos" class="btn btn-primary">Explorar Projetos</a>
@@ -65,7 +65,7 @@
                 <div class="projects-grid">
                     <% if (locals.posts && Array.isArray(posts) && posts.length > 0) { %>
                         <% posts.forEach(function(post, index) { %>
-                            <div class="project-card animate-up" style="--delay: <%= (index + 1) * 0.1 %>s; animation-delay: var(--delay);">
+                            <div class="project-card animate-up" onclick="if(!event.target.closest('.btn-like-ajax')) window.location.href='/projeto?id=<%= post.slug %>'" style="--delay: <%= (index + 1) * 0.1 %>s; animation-delay: var(--delay); cursor: pointer;">
                                 <div class="project-img" style="background-image: url('<%= post.image %>');"></div>
                                 <div class="project-info">
                                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
