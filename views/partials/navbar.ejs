@@ -90,11 +90,11 @@
                     </div>
                 </div>
 
-                <!-- Botão de Busca Mobile (Entre Notificação e Menu) -->
-                <button class="btn-navbar-search-mobile" id="btnTriggerSearchMobile" aria-label="Abrir busca">
-                    <i data-lucide="search"></i>
-                </button>
             <% } %>
+            <!-- Botão de Busca Mobile (Sempre visível no celular) -->
+            <button class="btn-navbar-search-mobile" id="btnTriggerSearchMobile" aria-label="Abrir busca">
+                <i data-lucide="search"></i>
+            </button>
         </div>
 
         <button class="mobile-menu-toggle" aria-label="Abrir menu" id="mobileMenuToggle">
@@ -227,6 +227,9 @@
                 <a href="/login" class="btn btn-primary">Fazer Parte</a>
             <% } %>
         </div>
+
+        <!-- Premium Script -->
+        <script src="/js/premium.js"></script>
 
         <script>
             document.addEventListener('DOMContentLoaded', () => {

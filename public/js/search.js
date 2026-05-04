@@ -16,12 +16,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             debounceTimer = setTimeout(async () => {
+                // Exibir Skeletons durante a busca
+                resultsElement.innerHTML = `
+                    <div style="padding: 1rem; display: flex; gap: 0.75rem; align-items: center;">
+                        <div class="skeleton" style="width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton" style="height: 8px; width: 30%; margin-bottom: 6px;"></div>
+                            <div class="skeleton" style="height: 12px; width: 70%;"></div>
+                        </div>
+                    </div>
+                    <div style="padding: 1rem; display: flex; gap: 0.75rem; align-items: center;">
+                        <div class="skeleton" style="width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;"></div>
+                        <div style="flex: 1;">
+                            <div class="skeleton" style="height: 8px; width: 25%; margin-bottom: 6px;"></div>
+                            <div class="skeleton" style="height: 12px; width: 50%;"></div>
+                        </div>
+                    </div>
+                `;
+                resultsElement.hidden = false;
+
                 try {
                     const response = await fetch(`/api/search/global?q=${encodeURIComponent(query)}`);
                     const items = await response.json();
                     renderResults(items, resultsElement);
                 } catch (error) {
                     console.error('Erro na busca:', error);
+                    resultsElement.hidden = true;
                 }
             }, 300);
         });

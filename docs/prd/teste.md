@@ -12,6 +12,10 @@
 - **Responsividade**: Layout fluído de **320px a 1920px** com componentes adaptativos (ex: Navbar com Menu Hambúrguer).
 - **UX Especial**: 
     - Splash Screen animado (Handshake SVG) exibido apenas no primeiro acesso da sessão.
+    - **Skeletons de Loading**: Feedback visual pulsante na busca global para reduzir o tempo de espera percebido.
+    - **Barra de Progresso (Top Loading)**: Feedback imediato de navegação no topo da tela ao trocar de página.
+    - **Transições Fluidas**: Animações de entrada (`Fade In Up`) e scroll suave com `IntersectionObserver`.
+    - **Hero Modernizado**: Layout centralizado com divisor de ondas (SVG) para transições orgânicas entre seções.
     - Scrollbars customizados em áreas de alta densidade de informação (ex: Lista de Amigos no compartilhamento).
 
 ### Back-end (Node.js + Express 5)
@@ -59,6 +63,12 @@
     - Agendamento com data, hora, local e descrição detalhada.
     - Inscrição e cancelamento de participação.
     - Lista de participantes integrada ao perfil do usuário.
+
+### ✨ Polimento UI/UX (Experiência Premium)
+- **Feedback Visual Instantâneo**: Barra de progresso no topo da tela acionada em toda transição de página.
+- **Busca Preditiva com Skeletons**: Carregamento assíncrono de resultados com silhuetas pulsantes.
+- **Design Emocional**: Transição orgânica (curvas/ondas) entre blocos de conteúdo para quebrar a rigidez de layouts tradicionais.
+- **Navegação Mobile Otimizada**: Busca acessível para todos os usuários (logados ou não) em dispositivos móveis.
 
 ---
 
@@ -123,6 +133,7 @@ sequenceDiagram
 - [x] **Responsividade**: Testado em Mobile (320px), Tablet (768px) e Desktop (1920px).
 - [x] **Segurança**: Senhas criptografadas e rotas protegidas por middleware de sessão.
 - [x] **Acessibilidade**: Sem erros críticos no Lighthouse A11y; foco visível em todos os elementos.
+- [x] **Feedback Visual**: Skeletons e barra de progresso implementados em fluxos críticos.
 - [x] **Performance**: Imagens otimizadas no lado do cliente antes do upload (limitadas a 2MB).
 - [x] **SEO**: Títulos dinâmicos e metadados básicos implementados.
 
